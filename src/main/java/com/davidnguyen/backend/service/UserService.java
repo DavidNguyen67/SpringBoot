@@ -2,6 +2,7 @@ package com.davidnguyen.backend.service;
 
 import com.davidnguyen.backend.dto.CreateUserDTO;
 import com.davidnguyen.backend.dto.DeleteUserDTO;
+import com.davidnguyen.backend.dto.UpdateUserDTO;
 import com.davidnguyen.backend.model.User;
 import com.davidnguyen.backend.repository.UserRepository;
 import com.davidnguyen.backend.utility.constant.UserConstant;
@@ -22,7 +23,6 @@ public class UserService {
 
     @Autowired
     private I18nService I18nService;
-
 
     public List<User> findUsersWithPagination(int offset, int limit) {
         List<User> users = userRepository.findUsersWithPagination(offset, limit);
@@ -59,15 +59,16 @@ public class UserService {
         return result;
     }
 
-    public Integer deleteUsers(DeleteUserDTO deleteUserDTO) {
+    public Integer deleteUsersById(DeleteUserDTO deleteUserDTO) {
         List<String> userIds = deleteUserDTO.getUserIds();
 
-        // Kiểm tra nếu danh sách userIds rỗng
-        if (userIds == null || userIds.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, I18nService.getMessage("no.user.ids.provided"));
+        // Kiểm tra xem các User với các userIds này có tồn tại hay không
+        List<User> users = userRepository.findUsersById(userIds);
+        if (users.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, I18nService.getMessage("no.users.found"));
         }
 
-        Integer result = userRepository.deleteUsers(userIds);
+        Integer result = userRepository.deleteUsersById(userIds);
 
         if (result == 0) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
@@ -76,4 +77,24 @@ public class UserService {
 
         return result;
     }
+
+    public Integer updateUsersById(UpdateUserDTO updateUserDTO) {
+        List<String> userIds = updateUserDTO.getUserIds();
+        List<User> users = userRepository.findUsersById(userIds);
+
+        // Kiểm tra xem các User với các userIds này có tồn tại hay không
+        if (users.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, I18nService.getMessage("no.users.found"));
+        }
+
+        Integer result = userRepository.updateUsersById(userIds, updateUserDTO.getEmail(), updateUserDTO.getFirstName(),
+                                                        updateUserDTO.getLastName(), updateUserDTO.getActive());
+
+        if (result == 0) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                                              I18nService.getMessage("user.update.failed"));
+        }
+        return result;
+    }
+
 }

@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 public class DeleteUserDTO {
     @NotNull(message = "userIds list cannot be null")
-    @Size(min = 1, message = "The list must contain at least one userId")
+    @Size.List(@Size(min = 1, message = "The list must contain at least one userId"))
     @ValidStringList
     private List<String> userIds;
 }

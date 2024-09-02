@@ -1,18 +1,13 @@
 package com.davidnguyen.backend.controller;
 
-import com.davidnguyen.backend.dto.CreateUserDTO;
-import com.davidnguyen.backend.dto.DeleteUserDTO;
-import com.davidnguyen.backend.dto.FindUserDTO;
+import com.davidnguyen.backend.dto.*;
 import com.davidnguyen.backend.model.User;
 import com.davidnguyen.backend.service.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +46,20 @@ public class UserController {
 
     @DeleteMapping("/delete/users")
     public ResponseEntity<Integer> deleteUser(@Valid @RequestBody DeleteUserDTO deleteUserDTO) {
-        return ResponseEntity.ok(userService.deleteUsers(deleteUserDTO));
+        return ResponseEntity.ok(userService.deleteUsersById(deleteUserDTO));
+    }
+
+    @PutMapping("/update/users")
+    public ResponseEntity<Integer> updateUsersById(@Valid @RequestBody UpdateUserDTO updateUserDTO) {
+        return ResponseEntity.ok(userService.updateUsersById(updateUserDTO));
+    }
+
+    @PostMapping("/demo")
+    public ResponseEntity<Map<String, Object>> demo(@Valid @RequestBody DemoDTO demoDTO) {
+        Map<String, Object> response = new HashMap<>();
+        log.info("demo demo");
+        response.put("demo", demoDTO.getUserIds());
+        return ResponseEntity.ok(response);
     }
 
 }
