@@ -5,6 +5,7 @@ import com.davidnguyen.backend.dto.DeleteUserDTO;
 import com.davidnguyen.backend.model.User;
 import com.davidnguyen.backend.repository.UserRepository;
 import com.davidnguyen.backend.utility.constant.UserConstant;
+import com.davidnguyen.backend.utility.helper.I18n;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,10 +20,14 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private I18n i18n;
+
+
     public List<User> findUsersWithPagination(int offset, int limit) {
         List<User> users = userRepository.findUsersWithPagination(offset, limit);
         if (users.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No users found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, i18n.getMessage("no.users.found"));
         }
         return users;
     }
@@ -39,8 +44,7 @@ public class UserService {
                                                            UserConstant.FIND_EMAIL_CONFLICT_LIMIT);
 
         if (!users.isEmpty()) {
-            log.info("Go here");
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "User with this email already exists");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, i18n.getMessage("user.exists"));
         }
 
         Integer result = userRepository.createAnUser(createUserDTO.getId(), createUserDTO.getEmail(),
@@ -48,7 +52,7 @@ public class UserService {
                                                      activeValue);
 
         if (result == 0) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create user");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, i18n.getMessage("user.create.failed"));
         }
 
         return result;
@@ -59,13 +63,13 @@ public class UserService {
 
         // Kiểm tra nếu danh sách userIds rỗng
         if (userIds == null || userIds.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user IDs provided");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, i18n.getMessage("no.user.ids.provided"));
         }
 
         Integer result = userRepository.deleteUsers(userIds);
 
         if (result == 0) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to delete users");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, i18n.getMessage("user.delete.failed"));
         }
 
         return result;
