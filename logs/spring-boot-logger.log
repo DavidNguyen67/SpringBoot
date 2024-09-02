@@ -3128,3 +3128,44 @@ java.lang.NullPointerException: Cannot invoke "org.springframework.context.Messa
 2024-09-02 14:25:57,990 INFO o.s.o.j.AbstractEntityManagerFactoryBean [Thread-35] Closing JPA EntityManagerFactory for persistence unit 'default'
 2024-09-02 14:25:57,992 INFO c.z.h.HikariDataSource [Thread-35] HikariPool-9 - Shutdown initiated...
 2024-09-02 14:25:57,993 INFO c.z.h.HikariDataSource [Thread-35] HikariPool-9 - Shutdown completed.
+2024-09-02 14:25:58,042 INFO o.s.b.StartupInfoLogger [restartedMain] Starting BackendApplication using Java 17.0.2 with PID 11996 (D:\learn\commercial\backend\target\classes started by nguye in D:\learn\commercial\backend)
+2024-09-02 14:25:58,042 INFO o.s.b.SpringApplication [restartedMain] No active profile set, falling back to 1 default profile: "default"
+2024-09-02 14:25:58,110 INFO o.s.d.r.c.RepositoryConfigurationDelegate [restartedMain] Multiple Spring Data modules found, entering strict repository configuration mode
+2024-09-02 14:25:58,110 INFO o.s.d.r.c.RepositoryConfigurationDelegate [restartedMain] Bootstrapping Spring Data JDBC repositories in DEFAULT mode.
+2024-09-02 14:25:58,113 INFO o.s.d.r.c.RepositoryConfigurationExtensionSupport [restartedMain] Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.davidnguyen.backend.repository.UserRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-02 14:25:58,113 INFO o.s.d.r.c.RepositoryConfigurationDelegate [restartedMain] Finished Spring Data repository scanning in 4 ms. Found 0 JDBC repository interfaces.
+2024-09-02 14:25:58,116 INFO o.s.d.r.c.RepositoryConfigurationDelegate [restartedMain] Multiple Spring Data modules found, entering strict repository configuration mode
+2024-09-02 14:25:58,116 INFO o.s.d.r.c.RepositoryConfigurationDelegate [restartedMain] Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-09-02 14:25:58,118 INFO o.s.d.r.c.RepositoryConfigurationDelegate [restartedMain] Finished Spring Data repository scanning in 2 ms. Found 1 JPA repository interface.
+2024-09-02 14:25:58,160 INFO o.s.b.w.e.t.TomcatWebServer [restartedMain] Tomcat initialized with port 8080 (http)
+2024-09-02 14:25:58,160 INFO o.a.j.l.DirectJDKLog [restartedMain] Initializing ProtocolHandler ["http-nio-8080"]
+2024-09-02 14:25:58,160 INFO o.a.j.l.DirectJDKLog [restartedMain] Starting service [Tomcat]
+2024-09-02 14:25:58,160 INFO o.a.j.l.DirectJDKLog [restartedMain] Starting Servlet engine: [Apache Tomcat/10.1.28]
+2024-09-02 14:25:58,168 INFO o.a.j.l.DirectJDKLog [restartedMain] Initializing Spring embedded WebApplicationContext
+2024-09-02 14:25:58,168 INFO o.s.b.w.s.c.ServletWebServerApplicationContext [restartedMain] Root WebApplicationContext: initialization completed in 125 ms
+2024-09-02 14:25:58,187 INFO o.h.j.i.u.LogHelper [restartedMain] HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-09-02 14:25:58,187 INFO o.h.c.i.RegionFactoryInitiator [restartedMain] HHH000026: Second-level cache disabled
+2024-09-02 14:25:58,192 INFO o.s.o.j.p.SpringPersistenceUnitInfo [restartedMain] No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-09-02 14:25:58,192 INFO c.z.h.HikariDataSource [restartedMain] HikariPool-10 - Starting...
+2024-09-02 14:25:58,194 INFO c.z.h.p.HikariPool [restartedMain] HikariPool-10 - Added connection com.mysql.cj.jdbc.ConnectionImpl@72466e6a
+2024-09-02 14:25:58,194 INFO c.z.h.HikariDataSource [restartedMain] HikariPool-10 - Start completed.
+2024-09-02 14:25:58,195 WARN o.h.d.Dialect [restartedMain] HHH000511: The 5.5.5 version for [org.hibernate.dialect.MySQLDialect] is no longer supported, hence certain features may not work properly. The minimum supported version is 8.0.0. Check the community dialects project for available legacy versions.
+2024-09-02 14:25:58,280 INFO o.h.e.t.j.p.i.JtaPlatformInitiator [restartedMain] HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-09-02 14:25:58,418 INFO o.s.o.j.AbstractEntityManagerFactoryBean [restartedMain] Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-09-02 14:25:58,453 WARN o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration [restartedMain] spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-09-02 14:25:58,502 INFO o.s.b.d.a.OptionalLiveReloadServer [restartedMain] LiveReload server is running on port 35729
+2024-09-02 14:25:58,508 INFO o.a.j.l.DirectJDKLog [restartedMain] Starting ProtocolHandler ["http-nio-8080"]
+2024-09-02 14:25:58,509 INFO o.s.b.w.e.t.TomcatWebServer [restartedMain] Tomcat started on port 8080 (http) with context path '/api'
+2024-09-02 14:25:58,512 INFO o.s.b.StartupInfoLogger [restartedMain] Started BackendApplication in 0.484 seconds (process running for 270.709)
+2024-09-02 14:25:58,513 INFO o.s.b.d.a.ConditionEvaluationDeltaLoggingListener [restartedMain] Condition evaluation unchanged
+2024-09-02 14:26:02,113 INFO o.a.j.l.DirectJDKLog [http-nio-8080-exec-3] Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-09-02 14:26:02,113 INFO o.s.w.s.FrameworkServlet [http-nio-8080-exec-3] Initializing Servlet 'dispatcherServlet'
+2024-09-02 14:26:02,114 INFO o.s.w.s.FrameworkServlet [http-nio-8080-exec-3] Completed initialization in 1 ms
+2024-09-02 14:26:02,228 DEBUG o.h.e.j.s.SqlStatementLogger [http-nio-8080-exec-3] select u1_0.id,u1_0.active,u1_0.deleted_at,u1_0.email,u1_0.first_name,u1_0.inserted_at,u1_0.last_name,u1_0.updated_at from users u1_0 where u1_0.email=? order by u1_0.inserted_at limit ?
+2024-09-02 14:26:02,256 WARN o.s.w.s.h.AbstractHandlerExceptionResolver [http-nio-8080-exec-3] Resolved [org.springframework.web.server.ResponseStatusException: 409 CONFLICT "Ng??i d�ng v?i email n�y ?� t?n t?i"]
+2024-09-02 14:26:03,410 DEBUG o.h.e.j.s.SqlStatementLogger [http-nio-8080-exec-2] select u1_0.id,u1_0.active,u1_0.deleted_at,u1_0.email,u1_0.first_name,u1_0.inserted_at,u1_0.last_name,u1_0.updated_at from users u1_0 where u1_0.email=? order by u1_0.inserted_at limit ?
+2024-09-02 14:26:03,413 WARN o.s.w.s.h.AbstractHandlerExceptionResolver [http-nio-8080-exec-2] Resolved [org.springframework.web.server.ResponseStatusException: 409 CONFLICT "Ng??i d�ng v?i email n�y ?� t?n t?i"]
+2024-09-02 14:26:03,965 DEBUG o.h.e.j.s.SqlStatementLogger [http-nio-8080-exec-5] select u1_0.id,u1_0.active,u1_0.deleted_at,u1_0.email,u1_0.first_name,u1_0.inserted_at,u1_0.last_name,u1_0.updated_at from users u1_0 where u1_0.email=? order by u1_0.inserted_at limit ?
+2024-09-02 14:26:03,968 WARN o.s.w.s.h.AbstractHandlerExceptionResolver [http-nio-8080-exec-5] Resolved [org.springframework.web.server.ResponseStatusException: 409 CONFLICT "Ng??i d�ng v?i email n�y ?� t?n t?i"]
+2024-09-02 14:26:16,486 DEBUG o.h.e.j.s.SqlStatementLogger [http-nio-8080-exec-8] select u1_0.id,u1_0.active,u1_0.deleted_at,u1_0.email,u1_0.first_name,u1_0.inserted_at,u1_0.last_name,u1_0.updated_at from users u1_0 where u1_0.email=? order by u1_0.inserted_at limit ?
+2024-09-02 14:26:16,488 WARN o.s.w.s.h.AbstractHandlerExceptionResolver [http-nio-8080-exec-8] Resolved [org.springframework.web.server.ResponseStatusException: 409 CONFLICT "Ng??i d�ng v?i email n�y ?� t?n t?i"]

@@ -6,7 +6,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class I18n {
+public class I18nService {
     @Autowired
     private MessageSource messageSource;
 
