@@ -9,13 +9,13 @@ import lombok.Setter;
 @Getter
 @Setter
 public class FindUserDTO {
-    @NotNull(message = "limit is required")
-    @Min(value = 0, message = "Min is 0")
-    @Max(value = 20, message = "Max is 20")
+    @NotNull(message = "{messages.limitRequired}")
+    @Min(value = 0, message = "{messages.minIsZero}")
+    @Max(value = 20, message = "{messages.maxIsTwenty}")
     private Integer limit;
 
-    @NotNull(message = "offset is required")
-    @Min(value = 0, message = "Min is 0")
-    @Max(value = 20, message = "Max is 20")
+    @NotNull(message = "{messages.offsetRequired}")
+    @Min(value = 0, message = "{messages.minIsZero}")
+    @Max(value = 20, message = "{messages.maxIsTwenty}")
     private Integer offset;
 }

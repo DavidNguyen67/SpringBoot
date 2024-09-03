@@ -27,7 +27,7 @@ public class UserService {
     public List<User> findUsersWithPagination(int offset, int limit) {
         List<User> users = userRepository.findUsersWithPagination(offset, limit);
         if (users.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, I18nService.getMessage("no.users.found"));
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, I18nService.getMessage("messages.noUsersFound"));
         }
         return users;
     }
@@ -44,16 +44,16 @@ public class UserService {
                                                            UserConstant.FIND_EMAIL_CONFLICT_LIMIT);
 
         if (!users.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, I18nService.getMessage("user.exists"));
+            throw new ResponseStatusException(HttpStatus.CONFLICT, I18nService.getMessage("messages.userExists"));
         }
 
-        Integer result = userRepository.createAnUser(createUserDTO.getId(), createUserDTO.getEmail(),
+        Integer result = userRepository.createAnUser(createUserDTO.getUserId(), createUserDTO.getEmail(),
                                                      createUserDTO.getFirstName(), createUserDTO.getLastName(),
                                                      activeValue);
 
         if (result == 0) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                                              I18nService.getMessage("user.create.failed"));
+                                              I18nService.getMessage("messages.userCreateFailed"));
         }
 
         return result;
@@ -65,14 +65,14 @@ public class UserService {
         // Kiểm tra xem các User với các userIds này có tồn tại hay không
         List<User> users = userRepository.findUsersById(userIds);
         if (users.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, I18nService.getMessage("no.users.found"));
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, I18nService.getMessage("messages.noUsersFound"));
         }
 
         Integer result = userRepository.deleteUsersById(userIds);
 
         if (result == 0) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                                              I18nService.getMessage("user.delete.failed"));
+                                              I18nService.getMessage("messages.userDeleteFailed"));
         }
 
         return result;
@@ -84,7 +84,7 @@ public class UserService {
 
         // Kiểm tra xem các User với các userIds này có tồn tại hay không
         if (users.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, I18nService.getMessage("no.users.found"));
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, I18nService.getMessage("messages.noUsersFound"));
         }
 
         Integer result = userRepository.updateUsersById(userIds, updateUserDTO.getEmail(), updateUserDTO.getFirstName(),
@@ -92,7 +92,7 @@ public class UserService {
 
         if (result == 0) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                                              I18nService.getMessage("user.update.failed"));
+                                              I18nService.getMessage("messages.userUpdateFailed"));
         }
         return result;
     }

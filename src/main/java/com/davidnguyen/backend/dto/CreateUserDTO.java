@@ -8,16 +8,16 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CreateUserDTO {
-    @NotBlank(message = "ID is required")
-    private String id;
+    @NotBlank(message = "{messages.userIdRequired}")
+    private String userId;
 
-    @Email(message = "Invalid email address")
+    @Email(message = "{messages.invalidEmailAddress}")
     private String email;
 
-    @NotBlank(message = "First name is required")
+    @NotBlank(message = "{messages.firstNameRequired}")
     private String firstName;
 
-    @NotBlank(message = "Last name is required")
+    @NotBlank(message = "{messages.lastNameRequired}")
     private String lastName;
 
     private Boolean active;

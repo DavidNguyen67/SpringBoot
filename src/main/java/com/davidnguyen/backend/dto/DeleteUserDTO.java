@@ -11,8 +11,8 @@ import java.util.List;
 @Getter
 @Setter
 public class DeleteUserDTO {
-    @NotNull(message = "userIds list cannot be null")
-    @Size.List(@Size(min = 1, message = "The list must contain at least one userId"))
+    @NotNull(message = "{messages.userIdRequired}")
+    @Size(min = 1, message = "{messages.atLeastOneUserIdRequired}")
     @ValidStringList
     private List<String> userIds;
 }

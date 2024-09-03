@@ -12,18 +12,18 @@ import java.util.List;
 @Setter
 @Getter
 public class UpdateUserDTO {
-    @NotNull(message = "userIds list cannot be null")
-    @Size(min = 1, message = "The list must contain at least one userId")
+    @NotNull(message = "{messages.userIdRequired}")
+    @Size(min = 1, message = "{messages.atLeastOneUserIdRequired}")
     @ValidStringList
     private List<String> userIds;
 
-    @Email(message = "Invalid email address")
+    @Email(message = "{messages.invalidEmailAddress}")
     private String email;
 
-    @NotNull(message = "First name is required")
+    @NotNull(message = "{messages.firstNameRequired}")
     private String firstName;
 
-    @NotNull(message = "Last name is required")
+    @NotNull(message = "{messages.lastNameRequired}")
     private String lastName;
 
     private Boolean active;
