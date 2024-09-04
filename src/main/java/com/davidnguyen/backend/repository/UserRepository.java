@@ -1,15 +1,16 @@
 package com.davidnguyen.backend.repository;
 
 import com.davidnguyen.backend.model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
-public interface UserRepository extends Repository<User, String> {
+public interface UserRepository extends JpaRepository<User, String> {
     @Query(value = "SELECT u FROM User u WHERE u.deletedAt IS NULL ORDER BY u.insertedAt ASC LIMIT :limit OFFSET :offset")
     List<User> findUsersWithPagination(@Param("offset") Integer offset, @Param("limit") Integer limit);
 
@@ -39,4 +40,12 @@ public interface UserRepository extends Repository<User, String> {
     Integer updateUsersById(@Param("userIds") List<String> userId, @Param("email") String email,
                             @Param("firstName") String firstName, @Param("lastName") String lastName,
                             @Param("active") Boolean active);
+
+    @Modifying
+    @Query("DELETE FROM User u WHERE u.deletedAt IS NOT NULL")
+    @Transactional
+    Integer deleteUsersWhereDeletedAtIsNotNull();
+
+    @Query("SELECT u FROM User u WHERE u.deletedAt <= :timestamp")
+    List<User> findAllByDeletedAtBefore(@Param("timestamp") LocalDateTime timestamp);
 }

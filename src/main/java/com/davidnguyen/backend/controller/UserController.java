@@ -21,11 +21,10 @@ public class UserController {
 
     @PostMapping("/users")
     public ResponseEntity<Map<String, Object>> findUsersWithPagination(
-            @Valid @RequestBody FindUserDTO findUserRequestDTO) {
+            @Valid @RequestBody FindUserDTO findUserDTO) {
 
         // Lấy danh sách người dùng với phân trang
-        List<User> users = userService.findUsersWithPagination(findUserRequestDTO.getOffset(),
-                                                               findUserRequestDTO.getLimit());
+        List<User> users = userService.findUsersWithPagination(findUserDTO.getOffset(), findUserDTO.getLimit());
 
         // Đếm tổng số người dùng
         Integer total = userService.countAllUsers();
@@ -40,7 +39,7 @@ public class UserController {
     }
 
     @PostMapping("/create/user")
-    public ResponseEntity<Integer> createUser(@Valid @RequestBody CreateUserDTO createUserDTO) {
+    public ResponseEntity<Map<String, Integer>> createUser(@Valid @RequestBody CreateUserDTO createUserDTO) {
         return ResponseEntity.ok(userService.createAnUser(createUserDTO));
     }
 

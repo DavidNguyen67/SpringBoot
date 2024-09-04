@@ -20,10 +20,8 @@ public class UpdateUserDTO {
     @Email(message = "{messages.invalidEmailAddress}")
     private String email;
 
-    @NotNull(message = "{messages.firstNameRequired}")
     private String firstName;
 
-    @NotNull(message = "{messages.lastNameRequired}")
     private String lastName;
 
     private Boolean active;

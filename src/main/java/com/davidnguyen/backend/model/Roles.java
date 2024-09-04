@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
 @Table(name = "roles")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class Role extends BaseEntity {
+public class Roles extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
