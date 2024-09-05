@@ -4,6 +4,7 @@ import com.davidnguyen.backend.dto.CreateUserDTO;
 import com.davidnguyen.backend.dto.DeleteUserDTO;
 import com.davidnguyen.backend.dto.UpdateUserDTO;
 import com.davidnguyen.backend.model.User;
+import com.davidnguyen.backend.model.UserRole;
 import com.davidnguyen.backend.repository.UserRepository;
 import com.davidnguyen.backend.repository.UserRoleRepository;
 import com.davidnguyen.backend.utility.constant.UserConstant;
@@ -31,7 +32,7 @@ public class UserService {
     @Autowired
     private I18nService i18nService;
 
-    public List<User> findUsersWithPagination(int offset, int limit) {
+    public List<User> findUsersWithPagination(Integer offset, Integer limit) {
         List<User> users = userRepository.findUsersWithPagination(offset, limit);
         if (users.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, i18nService.getMessage("messages.noUsersFound"));
@@ -83,7 +84,7 @@ public class UserService {
                                                                createUserDTO.getLastName(),
                                                                activeValue);
 
-        Integer resultCreateUserRoles = userRoleRepository.assignRoleToUser(createUserDTO.getRoleId(),
+        Integer resultCreateUserRoles = userRoleRepository.assignRoleToUser(createUserDTO.getMappingId(),
                                                                             createUserDTO.getUserId(),
                                                                             createUserDTO.getRoleId());
 
@@ -97,14 +98,16 @@ public class UserService {
                                               i18nService.getMessage("messages.userCreateFailed"));
         }
 
-        Map<String, Integer> resultMap = new HashMap<>();
-        resultMap.put("resultCreateUser", resultCreateUser);
-        resultMap.put("resultCreateUserRoles", resultCreateUserRoles);
-        return resultMap;
+        Map<String, Integer> result = new HashMap<>();
+        result.put("resultCreateUser", resultCreateUser);
+        result.put("resultCreateUserRoles", resultCreateUserRoles);
+        return result;
     }
 
-    public Integer deleteUsersById(DeleteUserDTO deleteUserDTO) {
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
+    public Map<String, Integer> deleteUsersById(DeleteUserDTO deleteUserDTO) {
         List<String> userIds = deleteUserDTO.getUserIds();
+        List<String> roleIds = deleteUserDTO.getRoleIds();
 
         // Kiểm tra xem các User với các userIds này có tồn tại hay không
         List<User> users = userRepository.findUsersById(userIds);
@@ -112,16 +115,30 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, i18nService.getMessage("messages.noUsersFound"));
         }
 
-        Integer result = userRepository.deleteUsersById(userIds);
+        List<UserRole> userRoles = userRoleRepository.findUserRolesByRoleId(roleIds);
+        if (userRoles.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "UserRole not found");
+        }
 
-        if (result == 0) {
+        Integer resultDeleteUser = userRepository.deleteUsersById(userIds);
+        if (resultDeleteUser == 0) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                                               i18nService.getMessage("messages.userDeleteFailed"));
         }
 
+        Integer resultDeleteUserRole = userRoleRepository.deleteUserRolesByRoleIds(roleIds);
+        if (resultDeleteUserRole == 0) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "DeleteUserRole failed");
+        }
+
+        Map<String, Integer> result = new HashMap<>();
+        result.put("resultDeleteUserRole", resultDeleteUserRole);
+        result.put("resultDeleteUser", resultDeleteUser);
+
         return result;
     }
 
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
     public Integer updateUsersById(UpdateUserDTO updateUserDTO) {
         List<String> userIds = updateUserDTO.getUserIds();
 

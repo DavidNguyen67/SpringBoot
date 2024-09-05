@@ -7,6 +7,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CreateUserRoleDTO {
+    @NotBlank
+    private String mappingId;
+
     @NotBlank(message = "{messages.roleIdRequired}")
     private String roleId;
 

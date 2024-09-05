@@ -1,7 +1,11 @@
 package com.davidnguyen.backend.scheduled;
 
+import com.davidnguyen.backend.model.Role;
 import com.davidnguyen.backend.model.User;
+import com.davidnguyen.backend.model.UserRole;
+import com.davidnguyen.backend.repository.RolesRepository;
 import com.davidnguyen.backend.repository.UserRepository;
+import com.davidnguyen.backend.repository.UserRoleRepository;
 import com.davidnguyen.backend.utility.constant.UserConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,17 +20,33 @@ import java.util.List;
 public class ScheduledTasks {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private RolesRepository rolesRepository;
+    @Autowired
+    private UserRoleRepository userRoleRepository;
 
     @Scheduled(cron = "0 0 0 * * ?") // Chạy vào 12h đêm mỗi ngày
     public void deleteUsersScheduled() {
         LocalDateTime daysAgo = LocalDateTime.now().minusDays(UserConstant.DELETE_USER_AFTER_DAYS);
         List<User> usersToDelete = userRepository.findAllByDeletedAtBefore(daysAgo);
+        List<Role> rolesToDelete = rolesRepository.findAllByDeletedAtBefore(daysAgo);
+        List<UserRole> userRolesToDelete = userRoleRepository.findAllByDeletedAtBefore(daysAgo);
 
         if (!usersToDelete.isEmpty()) {
             userRepository.deleteAll(usersToDelete);
             log.warn("Deleted {} users", usersToDelete.size());
-            return;
         }
-        log.info("No users need to delete");
+
+        if (!rolesToDelete.isEmpty()) {
+            rolesRepository.deleteAll(rolesToDelete);
+            log.warn("Deleted {} roles", rolesToDelete.size());
+        }
+
+        if (!userRolesToDelete.isEmpty()) {
+            userRoleRepository.deleteAll(userRolesToDelete);
+            log.warn("Deleted {} userRoles", userRolesToDelete.size());
+        }
+
+        log.info("Deleted schedule finished");
     }
 }

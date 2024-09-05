@@ -44,7 +44,7 @@ public class UserController {
     }
 
     @DeleteMapping("/delete/users")
-    public ResponseEntity<Integer> deleteUser(@Valid @RequestBody DeleteUserDTO deleteUserDTO) {
+    public ResponseEntity<Map<String, Integer>> deleteUser(@Valid @RequestBody DeleteUserDTO deleteUserDTO) {
         return ResponseEntity.ok(userService.deleteUsersById(deleteUserDTO));
     }
 

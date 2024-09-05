@@ -10,12 +10,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class DeleteUserDTO {
-    @NotNull(message = "{messages.userIdRequired}")
-    @Size(min = 1, message = "{messages.atLeastOneUserIdRequired}")
-    @ValidStringList
-    private List<String> userIds;
-
+public class DeleteRolesDTO {
     @NotNull
     @Size(min = 1)
     @ValidStringList

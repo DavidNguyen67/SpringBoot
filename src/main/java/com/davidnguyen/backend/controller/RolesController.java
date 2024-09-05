@@ -1,12 +1,14 @@
 package com.davidnguyen.backend.controller;
 
 import com.davidnguyen.backend.dto.CreateRoleDTO;
+import com.davidnguyen.backend.dto.DeleteRolesDTO;
 import com.davidnguyen.backend.dto.FindUserDTO;
-import com.davidnguyen.backend.model.Roles;
+import com.davidnguyen.backend.model.Role;
 import com.davidnguyen.backend.service.RolesService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,7 +25,7 @@ public class RolesController {
     @PostMapping("roles")
     public ResponseEntity<Map<String, Object>> findRolesWithPagination(@Valid @RequestBody FindUserDTO findUserDTO) {
         // Lấy danh sách người dùng với phân trang
-        List<Roles> roles = rolesService.findRolesWithPagination(findUserDTO.getOffset(), findUserDTO.getLimit());
+        List<Role> roles = rolesService.findRolesWithPagination(findUserDTO.getOffset(), findUserDTO.getLimit());
 
         Integer total = rolesService.countAllRoles();
 
@@ -41,4 +43,8 @@ public class RolesController {
         return ResponseEntity.ok(rolesService.createRole(createRoleDTO));
     }
 
+    @DeleteMapping("/delete/roles")
+    public ResponseEntity<Map<String, Integer>> deleteRoles(@Valid @RequestBody DeleteRolesDTO deleteRolesDTO) {
+        return ResponseEntity.ok(rolesService.deleteRoles(deleteRolesDTO));
+    }
 }
