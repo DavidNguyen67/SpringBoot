@@ -11,12 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface UserRepository extends JpaRepository<User, String> {
-    @Query(value = "SELECT u, r FROM User u " +
-            "JOIN UserRole ur ON ur.userId = u.id AND ur.deletedAt IS NULL " +
-            "JOIN Role r ON r.id = ur.roleId AND r.deletedAt IS NULL " +
-            "WHERE u.deletedAt IS NULL " +
-            "ORDER BY u.insertedAt ASC " +
-            "LIMIT :limit OFFSET :offset")
+    @Query(value = "SELECT u FROM User u WHERE u.deletedAt IS NULL ORDER BY u.insertedAt ASC LIMIT :limit OFFSET :offset")
     List<User> findUsersWithPagination(@Param("offset") Integer offset, @Param("limit") Integer limit);
 
     @Query(value = "SELECT count(*) FROM User u " +

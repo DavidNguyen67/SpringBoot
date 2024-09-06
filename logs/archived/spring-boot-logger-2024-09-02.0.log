@@ -4746,7 +4746,7 @@ java.lang.NullPointerException: Cannot invoke "java.util.List.iterator()" becaus
 2024-09-02 17:32:03,048 ERROR o.a.j.l.DirectJDKLog [http-nio-8080-exec-3] Servlet.service() for servlet [dispatcherServlet] in context with path [/api] threw exception [Request processing failed: org.springframework.context.NoSuchMessageException: No message found under code 'user.not.found' for locale 'en_US'.] with root cause
 org.springframework.context.NoSuchMessageException: No message found under code 'user.not.found' for locale 'en_US'.
 	at org.springframework.context.support.AbstractMessageSource.getMessage(AbstractMessageSource.java:162)
-	at com.davidnguyen.backend.utility.helper.I18nService.getMessage(I18nService.java:14)
+	at com.davidnguyen.backend.utility.helper.I18nHelper.getMessage(I18nService.java:14)
 	at com.davidnguyen.backend.service.UserService.updateUsersById(UserService.java:89)
 	at com.davidnguyen.backend.controller.UserController.updateUsersById(UserController.java:57)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
@@ -5118,7 +5118,7 @@ java.lang.NullPointerException: Cannot invoke "org.hibernate.engine.jdbc.spi.Sql
 2024-09-02 22:05:36,374 ERROR o.a.j.l.DirectJDKLog [http-nio-8080-exec-2] Servlet.service() for servlet [dispatcherServlet] in context with path [/api] threw exception [Request processing failed: org.springframework.context.NoSuchMessageException: No message found under code 'user.not.found' for locale 'en_US'.] with root cause
 org.springframework.context.NoSuchMessageException: No message found under code 'user.not.found' for locale 'en_US'.
 	at org.springframework.context.support.AbstractMessageSource.getMessage(AbstractMessageSource.java:162)
-	at com.davidnguyen.backend.utility.helper.I18nService.getMessage(I18nService.java:14)
+	at com.davidnguyen.backend.utility.helper.I18nHelper.getMessage(I18nService.java:14)
 	at com.davidnguyen.backend.service.UserService.deleteUsersById(UserService.java:69)
 	at com.davidnguyen.backend.controller.UserController.deleteUser(UserController.java:52)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
@@ -5569,7 +5569,7 @@ jakarta.validation.UnexpectedTypeException: HV000030: No validator could be foun
 2024-09-02 22:06:29,610 ERROR o.a.j.l.DirectJDKLog [http-nio-8080-exec-1] Servlet.service() for servlet [dispatcherServlet] in context with path [/api] threw exception [Request processing failed: org.springframework.context.NoSuchMessageException: No message found under code 'user.not.found' for locale 'en_US'.] with root cause
 org.springframework.context.NoSuchMessageException: No message found under code 'user.not.found' for locale 'en_US'.
 	at org.springframework.context.support.AbstractMessageSource.getMessage(AbstractMessageSource.java:162)
-	at com.davidnguyen.backend.utility.helper.I18nService.getMessage(I18nService.java:14)
+	at com.davidnguyen.backend.utility.helper.I18nHelper.getMessage(I18nService.java:14)
 	at com.davidnguyen.backend.service.UserService.deleteUsersById(UserService.java:69)
 	at com.davidnguyen.backend.controller.UserController.deleteUser(UserController.java:52)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
@@ -5664,7 +5664,7 @@ org.springframework.context.NoSuchMessageException: No message found under code 
 2024-09-02 22:06:37,805 ERROR o.a.j.l.DirectJDKLog [http-nio-8080-exec-2] Servlet.service() for servlet [dispatcherServlet] in context with path [/api] threw exception [Request processing failed: org.springframework.context.NoSuchMessageException: No message found under code 'user.not.found' for locale 'en_US'.] with root cause
 org.springframework.context.NoSuchMessageException: No message found under code 'user.not.found' for locale 'en_US'.
 	at org.springframework.context.support.AbstractMessageSource.getMessage(AbstractMessageSource.java:162)
-	at com.davidnguyen.backend.utility.helper.I18nService.getMessage(I18nService.java:14)
+	at com.davidnguyen.backend.utility.helper.I18nHelper.getMessage(I18nService.java:14)
 	at com.davidnguyen.backend.service.UserService.deleteUsersById(UserService.java:69)
 	at com.davidnguyen.backend.controller.UserController.deleteUser(UserController.java:52)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
@@ -5721,7 +5721,7 @@ org.springframework.context.NoSuchMessageException: No message found under code 
 2024-09-02 22:06:41,453 ERROR o.a.j.l.DirectJDKLog [http-nio-8080-exec-4] Servlet.service() for servlet [dispatcherServlet] in context with path [/api] threw exception [Request processing failed: org.springframework.context.NoSuchMessageException: No message found under code 'user.not.found' for locale 'en_US'.] with root cause
 org.springframework.context.NoSuchMessageException: No message found under code 'user.not.found' for locale 'en_US'.
 	at org.springframework.context.support.AbstractMessageSource.getMessage(AbstractMessageSource.java:162)
-	at com.davidnguyen.backend.utility.helper.I18nService.getMessage(I18nService.java:14)
+	at com.davidnguyen.backend.utility.helper.I18nHelper.getMessage(I18nService.java:14)
 	at com.davidnguyen.backend.service.UserService.deleteUsersById(UserService.java:69)
 	at com.davidnguyen.backend.controller.UserController.deleteUser(UserController.java:52)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)

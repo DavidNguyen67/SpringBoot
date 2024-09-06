@@ -16,8 +16,15 @@ public interface UserRoleRepository extends JpaRepository<UserRole, String> {
     @Transactional
     Integer assignRoleToUser(@Param("id") String id, @Param("userId") String userId, @Param("roleId") String roleId);
 
+    @Query("SELECT DISTINCT ur FROM UserRole ur WHERE ur.deletedAt IS NULL AND (ur.userId IN :userIds OR ur.roleId IN :roleIds)")
+    List<UserRole> findUniqueUserRolesByRoleIdsOrUserIds(@Param("userIds") List<String> userIds,
+                                                         @Param("roleIds") List<String> roleIds);
+
     @Query(value = "SELECT ur FROM UserRole ur WHERE ur.deletedAt IS NULL AND ur.roleId IN :roleIds")
-    List<UserRole> findUserRolesByRoleId(@Param("roleIds") List<String> roleIds);
+    List<UserRole> findUserRolesByRoleIds(@Param("roleIds") List<String> roleIds);
+
+    @Query(value = "SELECT ur FROM UserRole ur WHERE ur.deletedAt IS NULL AND ur.userId IN :userIds GROUP BY ur.userId")
+    List<UserRole> findUserRolesByUserIds(@Param("userIds") List<String> userIds);
 
     @Modifying
     @Query(value = "UPDATE UserRole ur SET ur.deletedAt = current timestamp WHERE ur.roleId IN :roleIds")

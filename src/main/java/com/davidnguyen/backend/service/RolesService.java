@@ -6,7 +6,7 @@ import com.davidnguyen.backend.model.Role;
 import com.davidnguyen.backend.model.UserRole;
 import com.davidnguyen.backend.repository.RolesRepository;
 import com.davidnguyen.backend.repository.UserRoleRepository;
-import com.davidnguyen.backend.utility.helper.I18nService;
+import com.davidnguyen.backend.utility.helper.I18nHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ public class RolesService {
     private RolesRepository rolesRepository;
 
     @Autowired
-    private I18nService i18nService;
+    private I18nHelper i18NHelper;
 
     @Autowired
     private UserRoleRepository userRoleRepository;
@@ -31,7 +31,7 @@ public class RolesService {
     public List<Role> findRolesWithPagination(Integer offset, Integer limit) {
         List<Role> roles = rolesRepository.findRolesWithPagination(offset, limit);
         if (roles.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, i18nService.getMessage("messages.noRolesFound"));
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, i18NHelper.getMessage("messages.noRolesFound"));
         }
         return roles;
     }
@@ -46,7 +46,7 @@ public class RolesService {
 
         if (result == 0) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                                              i18nService.getMessage("messages.roleCreateFailed"));
+                                              i18NHelper.getMessage("messages.roleCreateFailed"));
         }
         return result;
     }
@@ -60,7 +60,7 @@ public class RolesService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No Roles in rolesRepository found");
         }
 
-        List<UserRole> userRoles = userRoleRepository.findUserRolesByRoleId(roleIds);
+        List<UserRole> userRoles = userRoleRepository.findUserRolesByRoleIds(roleIds);
         if (userRoles.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No UserRoles in userRoleRepository found");
         }
@@ -68,13 +68,13 @@ public class RolesService {
         Integer resultDeleteRoles = rolesRepository.deleteRolesById(roleIds);
         if (resultDeleteRoles == 0) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                                              i18nService.getMessage("messages.userDeleteFailed"));
+                                              i18NHelper.getMessage("messages.userDeleteFailed"));
         }
 
         Integer resultDeleteUserRoles = userRoleRepository.deleteUserRolesByRoleIds(roleIds);
         if (resultDeleteUserRoles == 0) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                                              i18nService.getMessage("messages.userDeleteFailed"));
+                                              i18NHelper.getMessage("messages.userDeleteFailed"));
         }
 
         Map<String, Integer> result = new HashMap<>();

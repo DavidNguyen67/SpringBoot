@@ -1,7 +1,6 @@
 package com.davidnguyen.backend.controller;
 
 import com.davidnguyen.backend.dto.*;
-import com.davidnguyen.backend.model.User;
 import com.davidnguyen.backend.service.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -21,10 +20,10 @@ public class UserController {
 
     @PostMapping("/users")
     public ResponseEntity<Map<String, Object>> findUsersWithPagination(
-            @Valid @RequestBody FindUserDTO findUserDTO) {
+            @Valid @RequestBody FindEntityDTO findEntityDTO) {
 
         // Lấy danh sách người dùng với phân trang
-        List<User> users = userService.findUsersWithPagination(findUserDTO.getOffset(), findUserDTO.getLimit());
+        List<UserDTO> users = userService.findUsersWithPagination(findEntityDTO.getOffset(), findEntityDTO.getLimit());
 
         // Đếm tổng số người dùng
         Integer total = userService.countAllUsers();

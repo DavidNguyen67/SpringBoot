@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class FindUserDTO {
+public class FindEntityDTO {
     @NotNull(message = "{messages.limitRequired}")
     @Min(value = 0, message = "{messages.minIsZero}")
     @Max(value = 20, message = "{messages.maxIsTwenty}")

@@ -1,6 +1,6 @@
 package com.davidnguyen.backend.dto;
 
-import com.davidnguyen.backend.validation.ValidStringList;
+import com.davidnguyen.backend.validation.AllStringElement;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -13,11 +13,11 @@ import java.util.List;
 public class DeleteUserDTO {
     @NotNull(message = "{messages.userIdRequired}")
     @Size(min = 1, message = "{messages.atLeastOneUserIdRequired}")
-    @ValidStringList
+    @AllStringElement
     private List<String> userIds;
 
     @NotNull
     @Size(min = 1)
-    @ValidStringList
+    @AllStringElement
     private List<String> roleIds;
 }

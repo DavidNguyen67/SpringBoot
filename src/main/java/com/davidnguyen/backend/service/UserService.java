@@ -3,12 +3,16 @@ package com.davidnguyen.backend.service;
 import com.davidnguyen.backend.dto.CreateUserDTO;
 import com.davidnguyen.backend.dto.DeleteUserDTO;
 import com.davidnguyen.backend.dto.UpdateUserDTO;
+import com.davidnguyen.backend.dto.UserDTO;
+import com.davidnguyen.backend.model.Role;
 import com.davidnguyen.backend.model.User;
 import com.davidnguyen.backend.model.UserRole;
+import com.davidnguyen.backend.repository.RolesRepository;
 import com.davidnguyen.backend.repository.UserRepository;
 import com.davidnguyen.backend.repository.UserRoleRepository;
 import com.davidnguyen.backend.utility.constant.UserConstant;
-import com.davidnguyen.backend.utility.helper.I18nService;
+import com.davidnguyen.backend.utility.helper.I18nHelper;
+import com.davidnguyen.backend.utility.helper.ObjectMapperHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,14 +34,24 @@ public class UserService {
     private UserRoleRepository userRoleRepository;
 
     @Autowired
-    private I18nService i18nService;
+    private I18nHelper i18NHelper;
+    @Autowired
+    private RolesRepository rolesRepository;
 
-    public List<User> findUsersWithPagination(Integer offset, Integer limit) {
+    public List<UserDTO> findUsersWithPagination(Integer offset, Integer limit) {
         List<User> users = userRepository.findUsersWithPagination(offset, limit);
+
+        List<String> userIds = users.stream().map(User::getId).toList();
+        List<UserRole> userRoles = userRoleRepository.findUserRolesByUserIds(userIds);
+        List<String> roleIds = userRoles.stream().map(UserRole::getRoleId).toList();
+
+        List<Role> roles = rolesRepository.findRolesById(roleIds);
+
         if (users.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, i18nService.getMessage("messages.noUsersFound"));
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, i18NHelper.getMessage("messages.noUsersFound"));
         }
-        return users;
+
+        return ObjectMapperHelper.mapAll(users, UserDTO.class);
     }
 
     public Integer countAllUsers() {
@@ -76,7 +90,7 @@ public class UserService {
                                                            UserConstant.FIND_EMAIL_CONFLICT_LIMIT);
 
         if (!users.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, i18nService.getMessage("messages.userExists"));
+            throw new ResponseStatusException(HttpStatus.CONFLICT, i18NHelper.getMessage("messages.userExists"));
         }
 
         Integer resultCreateUser = userRepository.createAnUser(createUserDTO.getId(), createUserDTO.getEmail(),
@@ -90,12 +104,12 @@ public class UserService {
 
         if (resultCreateUserRoles == 0) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                                              i18nService.getMessage("messages.createMappingUserRolesFailed"));
+                                              i18NHelper.getMessage("messages.createMappingUserRolesFailed"));
         }
 
         if (resultCreateUser == 0) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                                              i18nService.getMessage("messages.userCreateFailed"));
+                                              i18NHelper.getMessage("messages.userCreateFailed"));
         }
 
         Map<String, Integer> result = new HashMap<>();
@@ -112,10 +126,10 @@ public class UserService {
         // Kiểm tra xem các User với các userIds này có tồn tại hay không
         List<User> users = userRepository.findUsersById(userIds);
         if (users.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, i18nService.getMessage("messages.noUsersFound"));
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, i18NHelper.getMessage("messages.noUsersFound"));
         }
 
-        List<UserRole> userRoles = userRoleRepository.findUserRolesByRoleId(roleIds);
+        List<UserRole> userRoles = userRoleRepository.findUserRolesByRoleIds(roleIds);
         if (userRoles.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "UserRole not found");
         }
@@ -123,7 +137,7 @@ public class UserService {
         Integer resultDeleteUser = userRepository.deleteUsersById(userIds);
         if (resultDeleteUser == 0) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                                              i18nService.getMessage("messages.userDeleteFailed"));
+                                              i18NHelper.getMessage("messages.userDeleteFailed"));
         }
 
         Integer resultDeleteUserRole = userRoleRepository.deleteUserRolesByRoleIds(roleIds);
@@ -144,14 +158,14 @@ public class UserService {
 
         if (userIds.size() > 1 && updateUserDTO.getEmail() != null) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
-                                              i18nService.getMessage("messages.emailCannotUpdateForMultipleUsers"));
+                                              i18NHelper.getMessage("messages.emailCannotUpdateForMultipleUsers"));
         }
 
         List<User> users = userRepository.findUsersById(userIds);
 
         // Kiểm tra xem các User với các userIds này có tồn tại hay không
         if (users.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, i18nService.getMessage("messages.noUsersFound"));
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, i18NHelper.getMessage("messages.noUsersFound"));
         }
 
         // Duyệt qua các user và cập nhật từng thuộc tính chỉ khi giá trị mới không phải là null
@@ -175,7 +189,7 @@ public class UserService {
 
         if (savedUsers.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                                              i18nService.getMessage("messages.userUpdateFailed"));
+                                              i18NHelper.getMessage("messages.userUpdateFailed"));
         }
 
         return savedUsers.size();

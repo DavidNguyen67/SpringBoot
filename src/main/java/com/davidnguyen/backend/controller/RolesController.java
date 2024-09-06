@@ -2,7 +2,7 @@ package com.davidnguyen.backend.controller;
 
 import com.davidnguyen.backend.dto.CreateRoleDTO;
 import com.davidnguyen.backend.dto.DeleteRolesDTO;
-import com.davidnguyen.backend.dto.FindUserDTO;
+import com.davidnguyen.backend.dto.FindEntityDTO;
 import com.davidnguyen.backend.model.Role;
 import com.davidnguyen.backend.service.RolesService;
 import jakarta.validation.Valid;
@@ -23,9 +23,10 @@ public class RolesController {
     private RolesService rolesService;
 
     @PostMapping("roles")
-    public ResponseEntity<Map<String, Object>> findRolesWithPagination(@Valid @RequestBody FindUserDTO findUserDTO) {
+    public ResponseEntity<Map<String, Object>> findRolesWithPagination(
+            @Valid @RequestBody FindEntityDTO findEntityDTO) {
         // Lấy danh sách người dùng với phân trang
-        List<Role> roles = rolesService.findRolesWithPagination(findUserDTO.getOffset(), findUserDTO.getLimit());
+        List<Role> roles = rolesService.findRolesWithPagination(findEntityDTO.getOffset(), findEntityDTO.getLimit());
 
         Integer total = rolesService.countAllRoles();
 
