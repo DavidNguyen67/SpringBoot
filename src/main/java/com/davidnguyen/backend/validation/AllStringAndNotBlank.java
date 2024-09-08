@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = StringListValidator.class)
-public @interface AllStringElement {
+public @interface AllStringAndNotBlank {
     String message() default "All elements must be strings";
 
     Class<?>[] groups() default {};

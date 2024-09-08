@@ -1,6 +1,6 @@
 package com.davidnguyen.backend.dto;
 
-import com.davidnguyen.backend.validation.AllStringElement;
+import com.davidnguyen.backend.validation.AllStringAndNotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -13,6 +13,6 @@ import java.util.List;
 public class DeleteRolesDTO {
     @NotNull
     @Size(min = 1)
-    @AllStringElement
+    @AllStringAndNotBlank
     private List<String> roleIds;
 }

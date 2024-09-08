@@ -36,6 +36,14 @@ public class RolesService {
         return roles;
     }
 
+    public List<Role> findRolesById(List<String> roleIds) {
+        List<Role> roles = rolesRepository.findRolesById(roleIds);
+        if (roles.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, i18NHelper.getMessage("messages.noRolesFound"));
+        }
+        return roles;
+    }
+
     public Integer countAllRoles() {
         return rolesRepository.countRoles();
     }

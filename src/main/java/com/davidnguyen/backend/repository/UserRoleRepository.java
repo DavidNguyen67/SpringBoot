@@ -11,10 +11,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface UserRoleRepository extends JpaRepository<UserRole, String> {
-    @Modifying
-    @Query(value = "INSERT INTO user_roles (id, user_id, role_id) VALUES (:id, :userId, :roleId)", nativeQuery = true)
     @Transactional
-    Integer assignRoleToUser(@Param("id") String id, @Param("userId") String userId, @Param("roleId") String roleId);
+    @Modifying
+    @Query(value = "INSERT INTO user_roles (id, user_id, role_id) VALUES :ids, :userIds, :roleIds", nativeQuery = true)
+    Integer batchInsertUserRoles(@Param("ids") List<String> ids,
+                                 @Param("userIds") List<String> userIds,
+                                 @Param("roleIds") List<String> roleIds);
 
     @Query("SELECT DISTINCT ur FROM UserRole ur WHERE ur.deletedAt IS NULL AND (ur.userId IN :userIds OR ur.roleId IN :roleIds)")
     List<UserRole> findUniqueUserRolesByRoleIdsOrUserIds(@Param("userIds") List<String> userIds,
@@ -23,7 +25,7 @@ public interface UserRoleRepository extends JpaRepository<UserRole, String> {
     @Query(value = "SELECT ur FROM UserRole ur WHERE ur.deletedAt IS NULL AND ur.roleId IN :roleIds")
     List<UserRole> findUserRolesByRoleIds(@Param("roleIds") List<String> roleIds);
 
-    @Query(value = "SELECT ur FROM UserRole ur WHERE ur.deletedAt IS NULL AND ur.userId IN :userIds GROUP BY ur.userId")
+    @Query(value = "SELECT ur FROM UserRole ur WHERE ur.deletedAt IS NULL AND ur.userId IN :userIds")
     List<UserRole> findUserRolesByUserIds(@Param("userIds") List<String> userIds);
 
     @Modifying

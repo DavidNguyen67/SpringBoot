@@ -7,7 +7,6 @@ import com.davidnguyen.backend.dto.UserDTO;
 import com.davidnguyen.backend.model.Role;
 import com.davidnguyen.backend.model.User;
 import com.davidnguyen.backend.model.UserRole;
-import com.davidnguyen.backend.repository.RolesRepository;
 import com.davidnguyen.backend.repository.UserRepository;
 import com.davidnguyen.backend.repository.UserRoleRepository;
 import com.davidnguyen.backend.utility.constant.UserConstant;
@@ -20,9 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -35,27 +32,77 @@ public class UserService {
 
     @Autowired
     private I18nHelper i18NHelper;
+
     @Autowired
-    private RolesRepository rolesRepository;
+    private RolesService rolesService;
 
     public List<UserDTO> findUsersWithPagination(Integer offset, Integer limit) {
+        // Lấy danh sách users
         List<User> users = userRepository.findUsersWithPagination(offset, limit);
 
-        List<String> userIds = users.stream().map(User::getId).toList();
-        List<UserRole> userRoles = userRoleRepository.findUserRolesByUserIds(userIds);
-        List<String> roleIds = userRoles.stream().map(UserRole::getRoleId).toList();
-
-        List<Role> roles = rolesRepository.findRolesById(roleIds);
-
+        // Kiểm tra nếu danh sách users rỗng
         if (users.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, i18NHelper.getMessage("messages.noUsersFound"));
         }
 
-        return ObjectMapperHelper.mapAll(users, UserDTO.class);
+        // Lấy danh sách userIds
+        List<String> userIds = users.stream().map(User::getId).toList();
+
+        // Lấy danh sách userRoles theo userIds
+        List<UserRole> userRoles = userRoleRepository.findUserRolesByUserIds(userIds);
+
+        // Kiểm tra nếu danh sách userRoles rỗng
+        if (userRoles.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, i18NHelper.getMessage("messages.noUserRolesFound"));
+        }
+
+        // Lấy danh sách roleIds từ userRoles
+        List<String> roleMappingIds = userRoles.stream().map(UserRole::getRoleId).toList();
+
+        // Lấy danh sách roles từ roleMappingIds
+        List<Role> roles = rolesService.findRolesById(roleMappingIds);
+
+        // Kiểm tra nếu danh sách roles rỗng
+        if (roles.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, i18NHelper.getMessage("messages.noRolesFound"));
+        }
+
+        // Chuyển đổi danh sách users thành UserDTO
+        List<UserDTO> result = ObjectMapperHelper.mapAll(users, UserDTO.class);
+
+        // Gán danh sách vai trò vào UserDTO
+        result.forEach((user) -> {
+            List<Role> userRole = getUserRoles(user.getId(), userRoles, roles);
+
+            user.setRoles(userRole);
+        });
+
+        return result;
     }
 
     public Integer countAllUsers() {
         return userRepository.countUsers();
+    }
+
+    public List<Role> getUserRoles(String userId, List<UserRole> userRolesMapping, List<Role> roles) {
+        // Lọc danh sách userRoleIds dựa vào userId và trả ra List<String> roleIds của user đó
+        List<String> roleIdsInUserRole = userRolesMapping.stream()
+                .filter((userRoleMapping) -> userRoleMapping.getUserId().equals(userId))
+                .map(UserRole::getRoleId).toList();
+
+        // Lọc danh sách roles dựa trên roleIdsInUserRole trong List<Role>
+        List<Role> userRole = roles.stream()
+                .filter(role -> roleIdsInUserRole.contains(role.getId()))
+                .toList();
+
+        // Kiểm tra nếu danh sách role của user rỗng
+        if (userRole.isEmpty()) {
+            log.warn("User {} has no roles assigned", userId);
+        }
+
+        log.info("Check userRole size: {}", userRole.size());
+
+        return userRole;
     }
 
     /**
@@ -83,39 +130,51 @@ public class UserService {
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
     public Map<String, Integer> createAnUser(CreateUserDTO createUserDTO) {
-        Boolean activeValue = createUserDTO.getActive() != null ? createUserDTO.getActive() : UserConstant.ACTIVE;
+        // Xác định trạng thái active mặc định
+        Boolean activeValue = Optional.ofNullable(createUserDTO.getActive()).orElse(UserConstant.ACTIVE);
 
-        // Kiểm tra nếu email đã tồn tại
-        List<User> users = userRepository.findUsersByEmail(createUserDTO.getEmail(),
-                                                           UserConstant.FIND_EMAIL_CONFLICT_LIMIT);
-
-        if (!users.isEmpty()) {
+        // Kiểm tra email tồn tại
+        if (!userRepository.findUsersByEmail(createUserDTO.getEmail(), UserConstant.FIND_EMAIL_CONFLICT_LIMIT)
+                .isEmpty()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, i18NHelper.getMessage("messages.userExists"));
         }
 
+        // Tạo người dùng
         Integer resultCreateUser = userRepository.createAnUser(createUserDTO.getId(), createUserDTO.getEmail(),
                                                                createUserDTO.getFirstName(),
-                                                               createUserDTO.getLastName(),
-                                                               activeValue);
-
-        Integer resultCreateUserRoles = userRoleRepository.assignRoleToUser(createUserDTO.getMappingId(),
-                                                                            createUserDTO.getUserId(),
-                                                                            createUserDTO.getRoleId());
-
-        if (resultCreateUserRoles == 0) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                                              i18NHelper.getMessage("messages.createMappingUserRolesFailed"));
-        }
+                                                               createUserDTO.getLastName(), activeValue);
 
         if (resultCreateUser == 0) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                                               i18NHelper.getMessage("messages.userCreateFailed"));
         }
 
-        Map<String, Integer> result = new HashMap<>();
-        result.put("resultCreateUser", resultCreateUser);
-        result.put("resultCreateUserRoles", resultCreateUserRoles);
-        return result;
+        // Xử lý gán role nếu có
+        List<String> roleIds = createUserDTO.getRoleId();
+        if (roleIds != null && !roleIds.isEmpty()) {
+            List<String> ids = new ArrayList<>();
+            roleIds.forEach(roleId -> {
+                ids.add(UUID.randomUUID().toString());
+                log.info("Generated ID: {}, User ID: {}, Role ID: {}", ids.get(ids.size() - 1), createUserDTO.getId(),
+                         roleId);
+            });
+
+            // Batch insert user_roles
+            Integer resultCreateUserRoles = userRoleRepository.batchInsertUserRoles(ids,
+                                                                                    Collections.nCopies(roleIds.size(),
+                                                                                                        createUserDTO.getId()),
+                                                                                    roleIds);
+
+            if (resultCreateUserRoles == 0) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                                                  i18NHelper.getMessage("messages.createMappingUserRolesFailed"));
+            }
+
+            return Map.of("resultCreateUser", resultCreateUser, "resultCreateUserRoles", resultCreateUserRoles);
+        }
+
+        // Nếu không có roleId, chỉ trả về kết quả tạo user
+        return Map.of("resultCreateUser", resultCreateUser, "resultCreateUserRoles", 0);
     }
 
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
