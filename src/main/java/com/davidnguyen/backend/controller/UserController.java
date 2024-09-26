@@ -3,8 +3,9 @@ package com.davidnguyen.backend.controller;
 import com.davidnguyen.backend.dto.*;
 import com.davidnguyen.backend.service.UserService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,15 +16,19 @@ import java.util.Map;
 @Slf4j
 @RestController
 public class UserController {
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @PostMapping("/users")
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @GetMapping("/users")
     public ResponseEntity<Map<String, Object>> findUsersWithPagination(
-            @Valid @RequestBody FindEntityDTO findEntityDTO) {
+            @RequestParam @Min(0) Integer offset,
+            @RequestParam @Min(1) @Max(50) Integer limit) {
 
         // Lấy danh sách người dùng với phân trang
-        List<UserDTO> users = userService.findUsersWithPagination(findEntityDTO.getOffset(), findEntityDTO.getLimit());
+        List<UserDTO> users = userService.findUsersWithPagination(offset, limit);
 
         // Đếm tổng số người dùng
         Integer total = userService.countAllUsers();

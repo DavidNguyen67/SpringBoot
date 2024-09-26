@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -15,7 +16,12 @@ import java.sql.Timestamp;
  */
 @Data
 @MappedSuperclass
+@NoArgsConstructor
 public class BaseEntity {
+    public BaseEntity(String id) {
+        this.id = id;
+    }
+
     @Id
     private String id;
 

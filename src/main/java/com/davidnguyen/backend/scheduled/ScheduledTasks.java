@@ -8,7 +8,6 @@ import com.davidnguyen.backend.repository.UserRepository;
 import com.davidnguyen.backend.repository.UserRoleRepository;
 import com.davidnguyen.backend.utility.constant.UserConstant;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -18,12 +17,16 @@ import java.util.List;
 @Slf4j
 @Component
 public class ScheduledTasks {
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private RolesRepository rolesRepository;
-    @Autowired
-    private UserRoleRepository userRoleRepository;
+    private final UserRepository userRepository;
+    private final RolesRepository rolesRepository;
+    private final UserRoleRepository userRoleRepository;
+
+    public ScheduledTasks(UserRepository userRepository, RolesRepository rolesRepository,
+                          UserRoleRepository userRoleRepository) {
+        this.userRepository = userRepository;
+        this.rolesRepository = rolesRepository;
+        this.userRoleRepository = userRoleRepository;
+    }
 
     @Scheduled(cron = "0 0 0 * * ?") // Chạy vào 12h đêm mỗi ngày
     public void deleteUsersScheduled() {

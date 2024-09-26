@@ -13,7 +13,6 @@ import com.davidnguyen.backend.utility.constant.UserConstant;
 import com.davidnguyen.backend.utility.helper.I18nHelper;
 import com.davidnguyen.backend.utility.helper.ObjectMapperHelper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,17 +23,18 @@ import java.util.*;
 @Service
 @Slf4j
 public class UserService {
-    @Autowired
-    private UserRepository userRepository;
+    private final I18nHelper i18NHelper;
+    private final RolesService rolesService;
+    private final UserRepository userRepository;
+    private final UserRoleRepository userRoleRepository;
 
-    @Autowired
-    private UserRoleRepository userRoleRepository;
-
-    @Autowired
-    private I18nHelper i18NHelper;
-
-    @Autowired
-    private RolesService rolesService;
+    public UserService(I18nHelper i18NHelper, RolesService rolesService, UserRepository userRepository,
+                       UserRoleRepository userRoleRepository) {
+        this.i18NHelper = i18NHelper;
+        this.rolesService = rolesService;
+        this.userRepository = userRepository;
+        this.userRoleRepository = userRoleRepository;
+    }
 
     public List<UserDTO> findUsersWithPagination(Integer offset, Integer limit) {
         // Lấy danh sách users
@@ -149,29 +149,25 @@ public class UserService {
                                               i18NHelper.getMessage("messages.userCreateFailed"));
         }
 
-        // Xử lý gán role nếu có
         List<String> roleIds = createUserDTO.getRoleId();
-        if (roleIds != null && !roleIds.isEmpty()) {
-            List<String> ids = new ArrayList<>();
+        if (!roleIds.isEmpty()) {
+            List<UserRole> userRoleNewRecord = new ArrayList<>();
             roleIds.forEach(roleId -> {
-                ids.add(UUID.randomUUID().toString());
-                log.info("Generated ID: {}, User ID: {}, Role ID: {}", ids.get(ids.size() - 1), createUserDTO.getId(),
-                         roleId);
+                UUID uuid = UUID.randomUUID();
+                log.info("Generated UUID: {}, User ID: {}, Role ID: {}", uuid, createUserDTO.getId(), roleId);
+                userRoleNewRecord.add(new UserRole(uuid.toString(), createUserDTO.getId(), roleId));
             });
 
-            // Batch insert user_roles
-            Integer resultCreateUserRoles = userRoleRepository.batchInsertUserRoles(ids,
-                                                                                    Collections.nCopies(roleIds.size(),
-                                                                                                        createUserDTO.getId()),
-                                                                                    roleIds);
+            List<UserRole> result = userRoleRepository.saveAll(userRoleNewRecord);
 
-            if (resultCreateUserRoles == 0) {
+            log.info("Saved {} user roles to the repository", result.size());
+
+            if (result.isEmpty()) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                                                  i18NHelper.getMessage("messages.createMappingUserRolesFailed"));
+                                                  i18NHelper.getMessage("messages.userRoleCreateFailed"));
             }
-
-            return Map.of("resultCreateUser", resultCreateUser, "resultCreateUserRoles", resultCreateUserRoles);
         }
+
 
         // Nếu không có roleId, chỉ trả về kết quả tạo user
         return Map.of("resultCreateUser", resultCreateUser, "resultCreateUserRoles", 0);

@@ -7,7 +7,6 @@ import com.davidnguyen.backend.model.UserRole;
 import com.davidnguyen.backend.repository.RolesRepository;
 import com.davidnguyen.backend.repository.UserRoleRepository;
 import com.davidnguyen.backend.utility.helper.I18nHelper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,14 +18,15 @@ import java.util.Map;
 
 @Service
 public class RolesService {
-    @Autowired
-    private RolesRepository rolesRepository;
+    private final RolesRepository rolesRepository;
+    private final I18nHelper i18NHelper;
+    private final UserRoleRepository userRoleRepository;
 
-    @Autowired
-    private I18nHelper i18NHelper;
-
-    @Autowired
-    private UserRoleRepository userRoleRepository;
+    public RolesService(RolesRepository rolesRepository, I18nHelper i18NHelper, UserRoleRepository userRoleRepository) {
+        this.rolesRepository = rolesRepository;
+        this.i18NHelper = i18NHelper;
+        this.userRoleRepository = userRoleRepository;
+    }
 
     public List<Role> findRolesWithPagination(Integer offset, Integer limit) {
         List<Role> roles = rolesRepository.findRolesWithPagination(offset, limit);

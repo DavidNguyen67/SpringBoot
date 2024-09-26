@@ -6,7 +6,6 @@ import com.davidnguyen.backend.dto.FindEntityDTO;
 import com.davidnguyen.backend.model.Role;
 import com.davidnguyen.backend.service.RolesService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,8 +18,11 @@ import java.util.Map;
 
 @RestController
 public class RolesController {
-    @Autowired
-    private RolesService rolesService;
+    private final RolesService rolesService;
+
+    public RolesController(RolesService rolesService) {
+        this.rolesService = rolesService;
+    }
 
     @PostMapping("roles")
     public ResponseEntity<Map<String, Object>> findRolesWithPagination(
