@@ -1,18 +1,21 @@
 package com.davidnguyen.backend.utility.helper;
 
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ResourceBundle;
+
 
 @Service
 public class I18nHelper {
-    private final MessageSource messageSource;
+    private final ResourceBundle bundle;
 
-    I18nHelper(MessageSource messageSource) {
-        this.messageSource = messageSource;
+    @Autowired
+    public I18nHelper(ResourceBundle bundle) {
+        this.bundle = bundle;
     }
 
     public String getMessage(String code) {
-        return messageSource.getMessage(code, null, LocaleContextHolder.getLocale());
+        return bundle.getString(code);
     }
 }

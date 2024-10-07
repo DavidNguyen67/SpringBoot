@@ -76,7 +76,11 @@
             <artifactId>modelmapper</artifactId>
             <version>3.1.1</version>
         </dependency>
-
+        <dependency>
+            <groupId>dev.akkinoc.util</groupId>
+            <artifactId>yaml-resource-bundle</artifactId>
+            <version>2.13.0</version>
+        </dependency>
     </dependencies>
 
     <build>
