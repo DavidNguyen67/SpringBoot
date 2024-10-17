@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,26 +23,25 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public Map<String, Object> findProductsWithPagination(@RequestParam("offset") @Min(0) Integer offset, @RequestParam("limit") @Min(1) @Max(50) Integer limit) {
-        return productService.findProductsWithPagination(offset, limit);
+    public ResponseEntity<Map<String, Object>> findProductsWithPagination(@RequestParam("offset") @Min(0) Integer offset, @RequestParam("limit") @Min(1) @Max(50) Integer limit) {
+        return ResponseEntity.ok(productService.findProductsWithPagination(offset, limit));
     }
 
     @PostMapping("/create/product")
-    public Integer createProducts(@Valid @RequestBody @Size List<CreateProductDTO> createProductDTO) {
+    public ResponseEntity<Integer> createProducts(@Valid @RequestBody @Size List<CreateProductDTO> createProductDTO) {
         if (createProductDTO.size() > 1) {
-            return productService.createProducts(createProductDTO);
+            return ResponseEntity.ok(productService.createProducts(createProductDTO));
         }
-        return productService.createAnProduct(createProductDTO.get(0));
+        return ResponseEntity.ok(productService.createAnProduct(createProductDTO.get(0)));
     }
 
-
     @PutMapping("/update/products")
-    public Integer updateProducts(@Valid @RequestBody UpdateProductsDTO updateProductsDTO) {
-        return productService.updateProductByIds(updateProductsDTO);
+    public ResponseEntity<Integer> updateProducts(@Valid @RequestBody UpdateProductsDTO updateProductsDTO) {
+        return ResponseEntity.ok(productService.updateProductByIds(updateProductsDTO));
     }
 
     @DeleteMapping("/delete/products")
-    public Integer deleteProducts(@Valid @RequestBody DeleteProductDTO deleteProductDTO) {
-        return productService.deleteSoftProductByIds(deleteProductDTO);
+    public ResponseEntity<Integer> deleteProducts(@Valid @RequestBody DeleteProductDTO deleteProductDTO) {
+        return ResponseEntity.ok(productService.deleteSoftProductByIds(deleteProductDTO));
     }
 }

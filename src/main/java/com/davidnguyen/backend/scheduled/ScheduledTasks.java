@@ -1,13 +1,7 @@
 package com.davidnguyen.backend.scheduled;
 
-import com.davidnguyen.backend.model.Product;
-import com.davidnguyen.backend.model.Role;
-import com.davidnguyen.backend.model.User;
-import com.davidnguyen.backend.model.UserRole;
-import com.davidnguyen.backend.repository.ProductRepository;
-import com.davidnguyen.backend.repository.RolesRepository;
-import com.davidnguyen.backend.repository.UserRepository;
-import com.davidnguyen.backend.repository.UserRoleRepository;
+import com.davidnguyen.backend.model.*;
+import com.davidnguyen.backend.repository.*;
 import com.davidnguyen.backend.utility.constant.UserConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -24,13 +18,15 @@ public class ScheduledTasks {
     private final RolesRepository rolesRepository;
     private final UserRoleRepository userRoleRepository;
     private final ProductRepository productRepository;
+    private final TagRepository tagRepository;
 
     public ScheduledTasks(UserRepository userRepository, RolesRepository rolesRepository,
-                          UserRoleRepository userRoleRepository, ProductRepository productRepository) {
+                          UserRoleRepository userRoleRepository, ProductRepository productRepository, TagRepository tagRepository) {
         this.userRepository = userRepository;
         this.rolesRepository = rolesRepository;
         this.userRoleRepository = userRoleRepository;
         this.productRepository = productRepository;
+        this.tagRepository = tagRepository;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -41,6 +37,7 @@ public class ScheduledTasks {
         List<Role> rolesToDelete = rolesRepository.findAllByDeletedAtBefore(daysAgo);
         List<UserRole> userRolesToDelete = userRoleRepository.findAllByDeletedAtBefore(daysAgo);
         List<Product> productsToDelete = productRepository.findAllByDeletedAtBefore(daysAgo);
+        List<Tag> tagsToDelete = tagRepository.findAllByDeletedAtBefore(daysAgo);
 
         if (!usersToDelete.isEmpty()) {
             userRepository.deleteAll(usersToDelete);
@@ -60,6 +57,11 @@ public class ScheduledTasks {
         if (!productsToDelete.isEmpty()) {
             productRepository.deleteAll(productsToDelete);
             log.warn("Deleted {} products", productsToDelete.size());
+        }
+
+        if (!tagsToDelete.isEmpty()) {
+            tagRepository.deleteAll(tagsToDelete);
+            log.warn("Deleted {} tags", tagsToDelete.size());
         }
 
         log.info("Deleted schedule finished");
