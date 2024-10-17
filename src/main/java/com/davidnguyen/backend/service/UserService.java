@@ -105,29 +105,6 @@ public class UserService {
         return userRole;
     }
 
-    /**
-     * Annotation này cho biết phương thức được đánh dấu sẽ được thực thi trong bối cảnh của một giao dịch (transaction).
-     * Điều này đảm bảo rằng tất cả các thao tác với cơ sở dữ liệu bên trong phương thức sẽ là một phần của cùng một giao dịch.
-     * <p>
-     * Thuộc tính `rollbackFor` chỉ định các ngoại lệ nào sẽ kích hoạt việc hoàn tác (rollback) của giao dịch.
-     * <p>
-     * Trong trường hợp này, giao dịch sẽ bị hoàn tác nếu một ngoại lệ thuộc kiểu `Exception` hoặc `RuntimeException` xảy ra.
-     * <p>
-     * - `Exception.class`: Hoàn tác giao dịch nếu có bất kỳ ngoại lệ đã kiểm tra (checked exception) nào được ném ra.
-     * - `RuntimeException.class`: Hoàn tác giao dịch nếu có bất kỳ ngoại lệ chưa kiểm tra (unchecked exception) nào xảy ra (tức là các ngoại lệ thuộc lớp con của `RuntimeException`).
-     * <p>
-     * Điều này đảm bảo tính toàn vẹn của dữ liệu bằng cách hoàn tác bất kỳ thay đổi nào được thực hiện bởi phương thức nếu có ngoại lệ xảy ra.
-     * <p>
-     * Ví dụ sử dụng:
-     * {@code
-     *
-     * @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
-     * public void someMethod() {
-     * // Triển khai phương thức
-     * }
-     * }
-     * @see org.springframework.transaction.annotation.Transactional
-     */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
     public Map<String, Integer> createAnUser(CreateUserDTO createUserDTO) {
         // Xác định trạng thái active mặc định
@@ -141,12 +118,12 @@ public class UserService {
 
         // Tạo người dùng
         Integer resultCreateUser = userRepository.createAnUser(createUserDTO.getId(), createUserDTO.getEmail(),
-                                                               createUserDTO.getFirstName(),
-                                                               createUserDTO.getLastName(), activeValue);
+                createUserDTO.getFirstName(),
+                createUserDTO.getLastName(), activeValue);
 
         if (resultCreateUser == 0) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                                              i18NHelper.getMessage("messages.userCreateFailed"));
+                    i18NHelper.getMessage("messages.userCreateFailed"));
         }
 
         List<String> roleIds = createUserDTO.getRoleId();
@@ -164,7 +141,7 @@ public class UserService {
 
             if (result.isEmpty()) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                                                  i18NHelper.getMessage("messages.userRoleCreateFailed"));
+                        i18NHelper.getMessage("messages.userRoleCreateFailed"));
             }
         }
 
@@ -192,7 +169,7 @@ public class UserService {
         Integer resultDeleteUser = userRepository.deleteUsersById(userIds);
         if (resultDeleteUser == 0) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                                              i18NHelper.getMessage("messages.userDeleteFailed"));
+                    i18NHelper.getMessage("messages.userDeleteFailed"));
         }
 
         Integer resultDeleteUserRole = userRoleRepository.deleteUserRolesByRoleIds(roleIds);
@@ -213,7 +190,7 @@ public class UserService {
 
         if (userIds.size() > 1 && updateUserDTO.getEmail() != null) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
-                                              i18NHelper.getMessage("messages.emailCannotUpdateForMultipleUsers"));
+                    i18NHelper.getMessage("messages.emailCannotUpdateForMultipleUsers"));
         }
 
         List<User> users = userRepository.findUsersById(userIds);
@@ -244,7 +221,7 @@ public class UserService {
 
         if (savedUsers.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                                              i18NHelper.getMessage("messages.userUpdateFailed"));
+                    i18NHelper.getMessage("messages.userUpdateFailed"));
         }
 
         return savedUsers.size();

@@ -33,8 +33,4 @@ public interface RolesRepository extends JpaRepository<Role, String> {
 
     @Query("SELECT r FROM Role r WHERE r.deletedAt <= :timestamp")
     List<Role> findAllByDeletedAtBefore(@Param("timestamp") LocalDateTime timestamp);
-
-    @Modifying
-    @Query(value = "DELETE FROM Role r WHERE r.deletedAt IS NOT NULL")
-    Integer deleterOLESWhereDeletedAtIsNotNull();
 }

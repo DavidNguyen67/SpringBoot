@@ -19,11 +19,6 @@ public interface TagsRepository extends JpaRepository<Tag, String> {
     @Query("UPDATE Tag t SET t.name = :newNameTag WHERE t.id IN :ids")
     Integer updateTagsName(List<String> ids, String newNameTag);
 
-    @Modifying
-    @Transactional
-    @Query(value = "UPDATE tags SET deleted_at = current_timestamp WHERE id IN :ids", nativeQuery = true)
-    Integer deleteTagsById(List<String> ids);
-
     @Query("SELECT t FROM Tag t WHERE t.name = :name")
     List<Tag> findTagsByName(String name);
 

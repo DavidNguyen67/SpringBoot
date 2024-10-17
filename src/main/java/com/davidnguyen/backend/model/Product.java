@@ -11,6 +11,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class Product extends BaseEntity {
+    // Stock Keeping Unit
     @Column(nullable = false)
     private String sku;
 

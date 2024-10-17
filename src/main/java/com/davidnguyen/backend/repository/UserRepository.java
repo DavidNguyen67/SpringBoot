@@ -49,10 +49,6 @@ public interface UserRepository extends JpaRepository<User, String> {
                             @Param("firstName") String firstName, @Param("lastName") String lastName,
                             @Param("active") Boolean active);
 
-    @Modifying
-    @Query("DELETE FROM User u WHERE u.deletedAt IS NOT NULL")
-    @Transactional
-    Integer deleteUsersWhereDeletedAtIsNotNull();
 
     @Query("SELECT u FROM User u WHERE u.deletedAt <= :timestamp")
     List<User> findAllByDeletedAtBefore(@Param("timestamp") LocalDateTime timestamp);

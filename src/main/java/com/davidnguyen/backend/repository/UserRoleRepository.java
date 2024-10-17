@@ -26,11 +26,6 @@ public interface UserRoleRepository extends JpaRepository<UserRole, String> {
     @Transactional
     Integer deleteUserRolesByRoleIds(@Param("roleIds") List<String> roleIds);
 
-    @Modifying
-    @Query(value = "UPDATE UserRole ur SET ur.deletedAt = current timestamp WHERE ur.userId IN :userIds")
-    @Transactional
-    Integer deleteUserRolesByUserIds(@Param("userIds") List<String> userIds);
-
     @Query("SELECT ur FROM UserRole ur WHERE ur.deletedAt <= :timestamp")
     List<UserRole> findAllByDeletedAtBefore(@Param("timestamp") LocalDateTime timestamp);
 }
