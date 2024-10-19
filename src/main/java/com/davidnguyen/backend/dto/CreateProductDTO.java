@@ -1,9 +1,12 @@
 package com.davidnguyen.backend.dto;
 
+import com.davidnguyen.backend.validation.AllStringAndNotBlank;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -29,4 +32,7 @@ public class CreateProductDTO {
     private String sku;
 
     private Boolean taxable;
+
+    @AllStringAndNotBlank
+    private List<String> tagIds;
 }

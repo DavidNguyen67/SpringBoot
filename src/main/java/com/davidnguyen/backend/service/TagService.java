@@ -97,4 +97,13 @@ public class TagService {
             throw e; // rethrow the exception after logging it
         }
     }
+
+    public List<Tag> findTagsByIds(List<String> ids) {
+        try {
+            return tagRepository.findTagsByIds(ids);
+        } catch (Exception e) {
+            log.error("Error finding tags by ids: {}", e.getMessage(), e);
+            throw e; // rethrow the exception after logging it
+        }
+    }
 }
