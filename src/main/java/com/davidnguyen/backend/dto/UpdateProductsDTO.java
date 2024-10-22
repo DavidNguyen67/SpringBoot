@@ -20,7 +20,6 @@ public class UpdateProductsDTO {
 
     private Double discountPrice;
 
-    @NotBlank
     private String name;
 
     @NotBlank
@@ -34,4 +33,7 @@ public class UpdateProductsDTO {
     private String sku;
 
     private Boolean taxable;
+
+    @AllStringAndNotBlank
+    private List<String> tagIds;
 }

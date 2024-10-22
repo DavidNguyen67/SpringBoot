@@ -3,6 +3,7 @@ package com.davidnguyen.backend.service;
 import com.davidnguyen.backend.model.ProductTag;
 import com.davidnguyen.backend.model.Tag;
 import com.davidnguyen.backend.repository.ProductTagsRepository;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -95,4 +96,46 @@ public class ProductTagService {
             }
         }
     }
+
+    @SneakyThrows
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
+    public Integer updateProductTag(List<String> productIds, List<String> tagIds) {
+        try {
+            Integer resultDeleteMapping = productTagsRepository.deleteProductTagByProductIds(productIds);
+
+            if (resultDeleteMapping == 0) {
+                throw new Exception("Failed to delete productTag");
+            }
+
+            List<ProductTag> newRecord = new ArrayList<>();
+
+            productIds.forEach(productId -> {
+                tagIds.forEach(tagId -> {
+                    ProductTag productTag = new ProductTag();
+                    productTag.setId(UUID.randomUUID().toString());
+                    productTag.setProductId(productId);
+                    productTag.setTagId(tagId);
+                    newRecord.add(productTag);
+                });
+            });
+
+            if (newRecord.isEmpty()) {
+                log.warn("No new productTag to create");
+                return 0;
+            }
+
+            int resultCreateMapping = productTagsRepository.saveAll(newRecord).size();
+
+            if (resultCreateMapping == 0) {
+                throw new Exception("Failed to create productTag");
+            }
+
+            return resultCreateMapping;
+
+        } catch (Exception e) {
+            log.error("Error updating productTag: {}", e.getMessage(), e);
+            throw e;
+        }
+    }
+
 }

@@ -150,7 +150,7 @@ public class ProductService {
     }
 
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
-    public Integer updateProductByIds(UpdateProductsDTO updateProductsDTO) {
+    public HashMap<String, Integer> updateProductByIds(UpdateProductsDTO updateProductsDTO) {
         try {
             List<String> productIds = updateProductsDTO.getProductIds();
 
@@ -165,15 +165,22 @@ public class ProductService {
             }
 
 
-            Integer result = productRepository.updateProductById(productIds, updateProductsDTO.getDescription(), updateProductsDTO.getDiscountPrice(),
+            Integer resultUpdateProduct = productRepository.updateProductById(productIds, updateProductsDTO.getDescription(), updateProductsDTO.getDiscountPrice(),
                     updateProductsDTO.getName(), updateProductsDTO.getProductStatusId(), updateProductsDTO.getQuantity(),
                     updateProductsDTO.getRegularPrice(), updateProductsDTO.getSku(), updateProductsDTO.getTaxable());
 
-            if (result == 0) {
+            if (resultUpdateProduct == 0) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to update products");
             }
 
-            return result;
+
+            Integer resultUpdateProductTags = productTagService.updateProductTag(productIds, updateProductsDTO.getTagIds());
+
+            HashMap<String, Integer> response = new HashMap<>();
+            response.put("resultUpdateProduct", resultUpdateProduct);
+            response.put("resultUpdateProductTags", resultUpdateProductTags);
+
+            return response;
         } catch (Exception e) {
             log.error("Error update products: {}", e.getMessage(), e);
             throw e; // rethrow the exception after logging it

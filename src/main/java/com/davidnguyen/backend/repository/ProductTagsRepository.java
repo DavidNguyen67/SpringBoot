@@ -23,4 +23,9 @@ public interface ProductTagsRepository extends JpaRepository<ProductTag, String>
     @Transactional
     @Query(value = "INSERT INTO product_tags (product_id, tag_id) VALUES (:productId, :tagId)", nativeQuery = true)
     Integer createProductTag(@Param("productId") String productId, @Param("tagId") String tagId);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM ProductTag pt WHERE pt.productId IN :productIds")
+    Integer deleteProductTagByProductIds(@Param("productIds") List<String> productIds);
 }

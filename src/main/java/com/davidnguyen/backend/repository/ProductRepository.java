@@ -32,7 +32,7 @@ public interface ProductRepository extends JpaRepository<Product, String> {
     @Modifying
     @Transactional
     @Query(value = "UPDATE Product p " +
-            "SET p.description = :description, p.discountPrice = :discountPrice, p.name = :name, p.productStatusId = :productStatusId, p.quantity = :quantity, p.regularPrice = :regularPrice, p.sku = :sku, p.taxable = :taxable " +
+            "SET p.description = :description, p.discountPrice = :discountPrice, p.productStatusId = :productStatusId, p.quantity = :quantity, p.regularPrice = :regularPrice, p.sku = :sku, p.taxable = :taxable " +
             "WHERE p.id IN :productIds")
     Integer updateProductById(@Param("productIds") List<String> productIds, @Param("description") String description,
                               @Param("discountPrice") Double discountPrice, @Param("name") String name, @Param("productStatusId") String productStatusId,
